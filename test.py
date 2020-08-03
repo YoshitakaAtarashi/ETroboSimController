@@ -1,11 +1,11 @@
-from ev3api.Motor import Motor, MotorType, ePortM
-from ETroboSimController import ETroboSimController
+import etrobosimcontroller.ev3api as ev3
+import etrobosimcontroller as etc
 import time
 
-motorR=Motor(ePortM.PORT_B,True,MotorType.LARGE_MOTOR)
-motorL=Motor(ePortM.PORT_C,True,MotorType.LARGE_MOTOR)
-motorARM=Motor(ePortM.PORT_A,True,MotorType.MEDIUM_MOTOR)
-motorTAIL=Motor(ePortM.PORT_D,True,MotorType.LARGE_MOTOR)
+motorR=ev3.Motor(ev3.ePortM.PORT_B,True,ev3.MotorType.LARGE_MOTOR)
+motorL=ev3.Motor(ev3.ePortM.PORT_C,True,ev3.MotorType.LARGE_MOTOR)
+motorARM=ev3.Motor(ev3.ePortM.PORT_A,True,ev3.MotorType.MEDIUM_MOTOR)
+motorTAIL=ev3.Motor(ev3.ePortM.PORT_D,True,ev3.MotorType.LARGE_MOTOR)
 
 walker=[(50,50),(50,0)]
 wid=0
@@ -14,11 +14,11 @@ motorR.reset()
 motorL.reset()
 
 try:
-    controller=ETroboSimController()
-    controller.addHandler(motorR)
-    controller.addHandler(motorL)
-    controller.addHandler(motorARM)
-    controller.addHandler(motorTAIL)
+    controller=etc.ETroboSimController()
+    controller.add(motorR)
+    controller.add(motorL)
+    controller.add(motorARM)
+    controller.add(motorTAIL)
 #    controller.start(debug=True)
     controller.start(debug=False)
     while controller.isAlive():

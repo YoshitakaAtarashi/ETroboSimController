@@ -1,10 +1,20 @@
 from ev3api.Motor import *
+from hexdump import hexdump
 
-motor=Motor(1,True,MotorType.MEDIUM_MOTOR)
+motor=Motor(ePortM.PORT_B,True,MotorType.LARGE_MOTOR)
 print(motor.type)
 print(motor.getCount())
 
 motor.setBrake(True)
 
 
-motor=Motor(1,True,type_=MotorType.MEDIUM_MOTOR)
+print(len(ePortM)) # NUM_PORT_M
+
+motor.setPWM(50)
+print(motor.pwm)
+motor.stop()
+
+data= bytearray(128)
+motor.updateData(data)
+print(hexdump(data))
+

@@ -12,12 +12,14 @@ class ETroboSimServer:
         self.EMBEDDED_PORT=embedded_port
         self.PACKET_SIZE=packet_size
         self.embeddedTime=0
+        self.debug=False
+    
+    def start(self):
         self.socket=socket(AF_INET, SOCK_DGRAM)
         self.socket.bind((self.EMBEDDED_ADDRESS, self.EMBEDDED_PORT))
         self.thread = threading.Thread(target=self.threadMethod)
         self.alive=True
         self.thread.start()
-        self.debug=False
 
     def recievePacket(self):
         self.data, self.unity_address = self.socket.recvfrom(self.PACKET_SIZE)

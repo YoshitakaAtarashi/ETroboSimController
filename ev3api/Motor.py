@@ -26,12 +26,13 @@ class Motor:
         self.count = 0
         self.offset = 0
         self.pwm = 0
-        self.stop_timer = 0
+        self.reset_timer = 0
 
     def reset(self):
         self.brake= True 
-        self.count = 0   # ev3_motor_reset_counts(mPort);
+        self.count = 0 
         self.offset = 0  
+        self.reset_timer = 3
 
     def getCount(self):
         return self.count-self.offset
@@ -52,16 +53,15 @@ class Motor:
         self.brake = brake
     
     def stop(self):
-        # (void)ev3_motor_stop(mPort, mBrake); 
-        self.stop_timer=3
+        self.pwm = 0
+        self.brake = True
 
-    def updateData(self, data : bytearray):
-        print(36+self.port*4)
+    def updateDataOfClient(self, data : bytearray):
         pack_into('<i' ,data,36+self.port*4,self.pwm)
         pack_into('<I' ,data,52+self.port*4,1 if self.brake else 0)
-        if self.stop_timer>0:
-            self.stop_timer-=1
-            st=1
+        if self.reset_timer>0:
+            self.reset_timer-=1
+            reset=1
         else:
-            st=0
-        pack_into('<I' ,data,68+self.port*4,st)
+            reset=0
+        pack_into('<I' ,data,68+self.port*4,reset)

@@ -15,16 +15,21 @@ class ETroboSimClient:
         self.embeddedTime=0
         self.unityTime=0
         self.led=3
+        self.debug=False
+        self.handlers = []
+
+    def start(self):
         self.socket=socket(AF_INET, SOCK_DGRAM)
         self.thread = threading.Thread(target=self.threadMethod)
         self.alive=True
         self.thread.start()
-        self.debug=False
 
     def updateData(self):
         pack_into('<QQ',self.data,8,self.embeddedTime,self.unityTime)
         pack_into('<I' ,self.data,32,self.led)
-        pack_into('<IIII' ,self.data,36,0,50,50,0) # motor
+        #pack_into('<IIII' ,self.data,36,0,50,50,0) # motor
+        for handler in self.handlers:
+            handler.updateDataOfClient(self.data)
 
     def sendPacket(self):
         self.socket.sendto(self.data, (self.UNITY_ADDRESS, self.UNITY_PORT))
@@ -45,6 +50,14 @@ class ETroboSimClient:
             if sleeptime>0:
                 time.sleep(sleeptime)
             i=i+1
+
+    def addHandler(self, handler):
+        self.handlers.append(handler)
+        return self
+    
+    def removeHandler(self, handler):
+        self.handlers.remove(handler)
+        return self
 
     def exit_process(self):
         self.alive=False

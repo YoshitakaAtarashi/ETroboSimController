@@ -8,31 +8,27 @@ from comm.ETroboSimClient import ETroboSimClient
 from comm.ETroboSimServer import ETroboSimServer
 
 class ETroboSimController:
-    def __init__(self):
+    def __init__(self, isL:bool = True):
+        self.lsL=isL
         self.client=ETroboSimClient()
         self.server=ETroboSimServer(self.client)
 
     def start(self,debug=False):
-        self.server.debug=debug
+        #isLでポートを変えたい。
         self.client.debug=debug
-        try:
-            while self.server.alive and self.client.alive:
-                if(debug):
-                    print(self.server)
-                    print(self.client)
-                time.sleep(1)
-
-        except KeyboardInterrupt:
-            self.exit_process()
-            raise
+        self.client.start()
+        self.server.debug=debug
+        self.server.start()
     
     def exit_process(self):
         self.client.exit_process()
         self.server.exit_process()
 
+    def isAlive(self):
+        return self.server.alive and self.client.alive
 
-controller=ETroboSimController()
-controller.start(debug=True)
-controller.exit_process()
+#controller=ETroboSimController()
+#controller.start(debug=True)
+#controller.exit_process()
 
 

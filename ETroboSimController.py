@@ -4,8 +4,8 @@ import time
 import threading
 from hexdump import hexdump
 # pip install hexdump
-from ETroboSimClient import ETroboSimClient
-from ETroboSimServer import ETroboSimServer
+from comm.ETroboSimClient import ETroboSimClient
+from comm.ETroboSimServer import ETroboSimServer
 
 class ETroboSimController:
     def __init__(self):

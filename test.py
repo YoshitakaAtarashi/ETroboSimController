@@ -2,24 +2,6 @@ from ev3api.Motor import *
 from hexdump import hexdump
 from ETroboSimController import *
 
-motor=Motor(ePortM.PORT_B,True,MotorType.LARGE_MOTOR)
-print(motor.type)
-print(motor.getCount())
-
-motor.setBrake(True)
-
-
-print(len(ePortM)) # NUM_PORT_M
-
-motor.setPWM(50)
-print(motor.pwm)
-motor.stop()
-
-data= bytearray(128)
-motor.updateDataOfClient(data)
-print(hexdump(data))
-
-
 motorR=Motor(ePortM.PORT_B,True,MotorType.LARGE_MOTOR)
 motorL=Motor(ePortM.PORT_C,True,MotorType.LARGE_MOTOR)
 motorR.setPWM(50)
@@ -32,15 +14,17 @@ wid=0
 
 try:
     controller=ETroboSimController()
-    controller.client.addHandler(motorR)
-    controller.client.addHandler(motorL)
-    controller.client.addHandler(motorARM)
-    controller.client.addHandler(motorTAIL)
-    controller.start(debug=True)
+    controller.addHandler(motorR)
+    controller.addHandler(motorL)
+    controller.addHandler(motorARM)
+    controller.addHandler(motorTAIL)
+#    controller.start(debug=True)
+    controller.start(debug=False)
     while controller.isAlive():
         motorR.setPWM(walker[wid][0])
         motorL.setPWM(walker[wid][1])
         wid=(wid+1)%len(walker)
+        print("MotorR={},MotorL={}".format(motorR.getCount(),motorL.getCount()))
         time.sleep(1)
     controller.exit_process()
 except KeyboardInterrupt:

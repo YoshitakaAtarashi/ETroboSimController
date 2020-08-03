@@ -27,6 +27,12 @@ class ETroboSimController:
     def isAlive(self):
         return self.server.alive and self.client.alive
 
+    def addHandler(self, handler):
+        if hasattr(handler,'updateData'):
+            self.client.addHandler(handler)
+        if hasattr(handler,'recieveData'):
+            self.server.addHandler(handler)
+
 #controller=ETroboSimController()
 #controller.start(debug=True)
 #controller.exit_process()

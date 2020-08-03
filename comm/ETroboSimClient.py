@@ -24,14 +24,11 @@ class ETroboSimClient:
         self.alive=True
         self.thread.start()
 
-    def updateData(self):
+    def sendPacket(self):
         pack_into('<QQ',self.data,8,self.embeddedTime,self.unityTime)
         pack_into('<I' ,self.data,32,self.led)
-        #pack_into('<IIII' ,self.data,36,0,50,50,0) # motor
         for handler in self.handlers:
-            handler.updateDataOfClient(self.data)
-
-    def sendPacket(self):
+            handler.updateData(self.data)
         self.socket.sendto(self.data, (self.UNITY_ADDRESS, self.UNITY_PORT))
 
     def threadMethod(self):
@@ -39,7 +36,6 @@ class ETroboSimClient:
         base_time = time.time()
         target_time=self.interval
         while self.alive:
-            self.updateData()        
             self.sendPacket()
             t=time.time()
             sleeptime = target_time-(t-base_time)

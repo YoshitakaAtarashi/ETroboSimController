@@ -56,7 +56,7 @@ class Motor:
         self.pwm = 0
         self.brake = True
 
-    def updateDataOfClient(self, data : bytearray):
+    def updateData(self, data : bytearray):
         pack_into('<i' ,data,36+self.port*4,self.pwm)
         pack_into('<I' ,data,52+self.port*4,1 if self.brake else 0)
         if self.reset_timer>0:
@@ -65,3 +65,6 @@ class Motor:
         else:
             reset=0
         pack_into('<I' ,data,68+self.port*4,reset)
+
+    def recieveData(self, data : bytearray):
+        self.count,=unpack_from('<i',data,288+self.port*4)

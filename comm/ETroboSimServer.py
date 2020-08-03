@@ -13,6 +13,7 @@ class ETroboSimServer:
         self.PACKET_SIZE=packet_size
         self.embeddedTime=0
         self.debug=False
+        self.handlers = []
     
     def start(self):
         self.socket=socket(AF_INET, SOCK_DGRAM)
@@ -26,6 +27,8 @@ class ETroboSimServer:
         self.unityTime,=unpack_from('<Q',self.data,16)
         if(self.debug and self.unity_address[0]!=self.EMBEDDED_ADDRESS):
             print("Unity address {} is not EMBEDDED_ADDRESS {}".format(self.unity_address,self.EMBEDDED_ADDRESS))
+        for handler in self.handlers:
+            handler.recieveData(self.data)
 
     def threadMethod(self):
         i=0
@@ -36,6 +39,14 @@ class ETroboSimServer:
                 print("Unity->Embedded: {}, UNITY_TIME: {}".format(i,self.unityTime))
             self.client.unityTime=self.unityTime        
             i=i+1
+
+    def addHandler(self, handler):
+        self.handlers.append(handler)
+        return self
+    
+    def removeHandler(self, handler):
+        self.handlers.remove(handler)
+        return self
 
     def exit_process(self):
         self.alive=False

@@ -3,15 +3,22 @@ from struct import pack_into, unpack_from
 import time
 import threading
 from .comm import ETroboSimClient, ETroboSimServer
+from enum import Enum
 
-class ETroboSimController:
-    def __init__(self, isL:bool = True):
-        self.lsL=isL
-        self.client=ETroboSimClient()
-        self.server=ETroboSimServer(self.client)
+class Course(Enum):
+    LEFT = 0
+    RIGHT = 1
+
+class Controller:
+    def __init__(self, course:Course = Course.LEFT):
+        if course==Course.LEFT:
+            self.client=ETroboSimClient()
+            self.server=ETroboSimServer(self.client)
+        else:
+            self.client=ETroboSimClient(unity_port=54003)
+            self.server=ETroboSimServer(self.client,embedded_port=54004)
 
     def start(self,debug=False):
-        #isLでポートを変えたい。
         self.client.debug=debug
         self.client.start()
         self.server.debug=debug

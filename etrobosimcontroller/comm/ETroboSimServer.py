@@ -2,8 +2,6 @@ from socket import socket, AF_INET, SOCK_DGRAM
 from struct import pack_into, unpack_from
 import time
 import threading
-from hexdump import hexdump
-# pip install hexdump
 
 class ETroboSimServer:
     def __init__(self,client,embedded_address='127.0.0.1', embedded_port=54002, packet_size=1024):
@@ -35,7 +33,6 @@ class ETroboSimServer:
         while self.alive:
             self.recievePacket()
             if(self.debug):
-                #print(hexdump(self.data))
                 print("Unity->Embedded: {}, UNITY_TIME: {}".format(i,self.unityTime))
             self.client.unityTime=self.unityTime        
             i=i+1

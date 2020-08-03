@@ -2,8 +2,7 @@ from socket import socket, AF_INET, SOCK_DGRAM
 from struct import pack_into, unpack_from
 import time
 import threading
-from .comm.ETroboSimClient import ETroboSimClient
-from .comm.ETroboSimServer import ETroboSimServer
+from .comm import ETroboSimClient, ETroboSimServer
 
 class ETroboSimController:
     def __init__(self, isL:bool = True):

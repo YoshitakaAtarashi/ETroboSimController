@@ -1,16 +1,17 @@
-from ev3api.Motor import *
-from hexdump import hexdump
-from ETroboSimController import *
+from ev3api.Motor import Motor, MotorType, ePortM
+from ETroboSimController import ETroboSimController
+import time
 
 motorR=Motor(ePortM.PORT_B,True,MotorType.LARGE_MOTOR)
 motorL=Motor(ePortM.PORT_C,True,MotorType.LARGE_MOTOR)
-motorR.setPWM(50)
-motorL.setPWM(50)
 motorARM=Motor(ePortM.PORT_A,True,MotorType.MEDIUM_MOTOR)
 motorTAIL=Motor(ePortM.PORT_D,True,MotorType.LARGE_MOTOR)
 
 walker=[(50,50),(50,0)]
 wid=0
+
+motorR.reset()
+motorL.reset()
 
 try:
     controller=ETroboSimController()

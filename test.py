@@ -19,6 +19,7 @@ def pidControl(initARM_count=-50,initTAIL_count=0):
     motorTAIL.setPWM(initTAIL_count-motorTAIL.getCount())
 #    print("MotorR={},MotorL={},MotorARM={},Color={}".format(motorR.getCount(),motorL.getCount(),motorARM.getCount(),colorSensor.getBrightness()))
     print("RGB={}".format(colorSensor.getRawColor()))
+    print("GYRO_ANGLE={}, ANGLER_VELOCITY={}".format(gyroSensor.getAngle(),gyroSensor.getAnglerVelocity()))
 
 motorR=ev3.Motor(ev3.ePortM.PORT_B,True,ev3.MotorType.LARGE_MOTOR)
 motorL=ev3.Motor(ev3.ePortM.PORT_C,True,ev3.MotorType.LARGE_MOTOR)
@@ -27,10 +28,11 @@ motorTAIL=ev3.Motor(ev3.ePortM.PORT_D,True,ev3.MotorType.LARGE_MOTOR)
 motorR.reset()
 motorL.reset()
 colorSensor=ev3.ColorSensor(ev3.ePortS.PORT_2)
+gyroSensor=ev3.GyroSensor(ev3.ePortS.PORT_4)
 
 try:
     controller=ets.Controller(ets.Course.LEFT)
-    controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor])
+    controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor,gyroSensor])
     controller.start(debug=False)
     controller.runCyclic(pidControl)
     controller.exit_process()

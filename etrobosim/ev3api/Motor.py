@@ -40,7 +40,9 @@ class Motor:
         return self.port
 
     def getPWM(self):
-        return self.pwm
+        with self.lock:
+            v=self.pwm
+        return v
 
     def setCount(self, count : int):
         with self.lock2:

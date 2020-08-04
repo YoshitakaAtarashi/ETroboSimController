@@ -23,6 +23,7 @@ class Controller:
         self.client.start()
         self.server.debug=debug
         self.server.start()
+        self.debug=debug
     
     def exit_process(self):
         self.client.exit_process()
@@ -31,11 +32,28 @@ class Controller:
     def isAlive(self):
         return self.server.alive and self.client.alive
 
-    def add(self, handler):
+    def addHandler(self, handler):
         if hasattr(handler,'_sendData'):
             self.client.addHandler(handler)
         if hasattr(handler,'_recieveData'):
             self.server.addHandler(handler)
+
+    def addHandlers(self, handlers):
+        for handler in handlers:
+            self.addHandler(handler)
+
+    def runCyclic(self, function, interval=0.01):
+        base_time=time.time()
+        target_time=interval
+        while self.isAlive():
+            function()
+            t=time.time()
+            sleeptime = target_time-(t-base_time)
+            if self.debug:
+                print("sleeptime={},real_time={}".format(sleeptime,t-base_time))
+            if sleeptime>0:
+                time.sleep(sleeptime)
+            target_time+=interval
 
 
 

@@ -15,10 +15,7 @@ wid=0
 
 try:
     controller=ets.Controller(ets.Course.LEFT)
-    controller.add(motorR)
-    controller.add(motorL)
-    controller.add(motorARM)
-    controller.add(motorTAIL)
+    controller.addHandlers([motorR,motorL,motorARM,motorTAIL])
     controller.start(debug=False)
     while controller.isAlive():
         motorR.setPWM(walker[wid][0])

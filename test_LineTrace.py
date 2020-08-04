@@ -1,7 +1,5 @@
 import etrobosim.ev3api as ev3
 import etrobosim as ets
-import time
-import math
 
 # ColorSensorのReflectを使ってP制御でライントレースする。似非10ms周期
 

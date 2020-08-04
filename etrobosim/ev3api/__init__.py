@@ -1,3 +1,3 @@
-
-from .Motor import Motor, MotorType, ePortM
-from .ColorSensor import ColorSensor, ePortS
+from .Port import ePortM, ePortS
+from .Motor import Motor, MotorType
+from .ColorSensor import ColorSensor

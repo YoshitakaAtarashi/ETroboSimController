@@ -1,7 +1,7 @@
-
 from enum import IntEnum
 from struct import pack_into, unpack_from
 import threading
+from . import ePortM
 
 class MotorType(IntEnum):
     NONE_MOTOR = 0
@@ -9,12 +9,6 @@ class MotorType(IntEnum):
     LARGE_MOTOR = 2
     UNREGULATED_MOTOR = 3
     TNUM_MOTOR_TYPE = 4
-
-class ePortM(IntEnum):
-    PORT_A = 0
-    PORT_B = 1 
-    PORT_C = 2
-    PORT_D = 3
 
 class Motor:
     PWM_MAX = 100

@@ -1,13 +1,6 @@
-from enum import IntEnum
 from struct import pack_into, unpack_from
 import threading
-
-class ePortS(IntEnum):
-    PORT_1 = 0
-    PORT_2 = 1 
-    PORT_3 = 2
-    PORT_4 = 3
-
+from . import ePortS
 
 class ColorSensor:
     PWM_MAX = 100
@@ -25,12 +18,12 @@ class ColorSensor:
             v=self.reflect
         return v
 
-    def getColorNumber():
+    def getColorNumber(self):
         with self.lock:
             v=self.color
         return v
 
-    def getAmbient():
+    def getAmbient(self):
         with self.lock:
             v=self.ambient
         return v

@@ -28,7 +28,7 @@ class ETroboSimClient:
         pack_into('<QQ',self.data,8,self.embeddedTime,self.unityTime)
         pack_into('<I' ,self.data,32,self.led)
         for handler in self.handlers:
-            handler.updateData(self.data)
+            handler._sendData(self.data)
         self.socket.sendto(self.data, (self.UNITY_ADDRESS, self.UNITY_PORT))
 
     def threadMethod(self):

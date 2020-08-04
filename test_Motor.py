@@ -1,7 +1,6 @@
 import etrobosim.ev3api as ev3
 import etrobosim as ets
 import time
-import math
 
 motorR=ev3.Motor(ev3.ePortM.PORT_B,True,ev3.MotorType.LARGE_MOTOR)
 motorL=ev3.Motor(ev3.ePortM.PORT_C,True,ev3.MotorType.LARGE_MOTOR)
@@ -25,7 +24,7 @@ try:
         motorL.setPWM(walker[wid][1])
         wid=(wid+1)%len(walker)
         print("MotorR={},MotorL={}".format(motorR.getCount(),motorL.getCount()))
-        time.sleep(0.01)
+        time.sleep(1)
     controller.exit_process()
 except KeyboardInterrupt:
     controller.exit_process()

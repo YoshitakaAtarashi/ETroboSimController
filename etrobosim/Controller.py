@@ -32,9 +32,9 @@ class Controller:
         return self.server.alive and self.client.alive
 
     def add(self, handler):
-        if hasattr(handler,'updateData'):
+        if hasattr(handler,'_sendData'):
             self.client.addHandler(handler)
-        if hasattr(handler,'recieveData'):
+        if hasattr(handler,'_recieveData'):
             self.server.addHandler(handler)
 
 

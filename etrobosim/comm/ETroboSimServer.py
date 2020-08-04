@@ -26,7 +26,7 @@ class ETroboSimServer:
         if(self.debug and self.unity_address[0]!=self.EMBEDDED_ADDRESS):
             print("Unity address {} is not EMBEDDED_ADDRESS {}".format(self.unity_address,self.EMBEDDED_ADDRESS))
         for handler in self.handlers:
-            handler.recieveData(self.data)
+            handler._recieveData(self.data)
 
     def threadMethod(self):
         i=0

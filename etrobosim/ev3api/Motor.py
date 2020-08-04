@@ -1,6 +1,7 @@
 
 from enum import IntEnum
 from struct import pack_into, unpack_from
+import threading
 
 class MotorType(IntEnum):
     NONE_MOTOR = 0
@@ -27,15 +28,19 @@ class Motor:
         self.offset = 0
         self.pwm = 0
         self.reset_timer = 0
+        self.lock = threading.Lock()
+        self.lock2 = threading.Lock()
 
     def reset(self):
-        self.brake= True 
-        self.count = 0 
-        self.offset = 0  
-        self.reset_timer = 3
+        with self.lock:
+            self.brake= True 
+            self.offset = 0  
+            self.reset_timer = 3
 
     def getCount(self):
-        return self.count-self.offset
+        with self.lock2:
+            v=self.count-self.offset
+        return v
 
     def getPort(self):
         return self.port
@@ -44,27 +49,37 @@ class Motor:
         return self.pwm
 
     def setCount(self, count : int):
-        self.offset = self.count-count
+        with self.lock2:
+            self.offset = self.count-count
 
     def setPWM(self, pwm : int):
-        self.pwm = min(self.PWM_MAX, max(pwm, self.PWM_MIN))
+        p=min(self.PWM_MAX, max(pwm, self.PWM_MIN))
+        with self.lock:
+            self.pwm = p
 
     def setBrake(self, brake : bool):
-        self.brake = brake
+        with self.lock:
+            self.brake = brake
     
     def stop(self):
-        self.pwm = 0
-        self.brake = True
+        with self.lock:
+            self.pwm = 0
+            self.brake = True
 
-    def updateData(self, data : bytearray):
-        pack_into('<i' ,data,36+self.port*4,self.pwm)
-        pack_into('<I' ,data,52+self.port*4,1 if self.brake else 0)
-        if self.reset_timer>0:
-            self.reset_timer-=1
-            reset=1
-        else:
-            reset=0
+    def _sendData(self, data : bytearray):
+        with self.lock:
+            pwm=self.pwm
+            brake=1 if self.brake else 0
+            if self.reset_timer>0:
+                self.reset_timer-=1
+                reset=1
+            else:
+                reset=0            
+        pack_into('<i' ,data,36+self.port*4,pwm)
+        pack_into('<I' ,data,52+self.port*4,brake)
         pack_into('<I' ,data,68+self.port*4,reset)
 
-    def recieveData(self, data : bytearray):
-        self.count,=unpack_from('<i',data,288+self.port*4)
+    def _recieveData(self, data : bytearray):
+        v,=unpack_from('<i',data,288+self.port*4)
+        with self.lock2:
+            self.count=v

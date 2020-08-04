@@ -3,3 +3,4 @@ from .Motor import Motor, MotorType
 from .ColorSensor import ColorSensor
 from .GyroSensor import GyroSensor
 from .SonarSensor import SonarSensor
+from .TouchSensor import TouchSensor

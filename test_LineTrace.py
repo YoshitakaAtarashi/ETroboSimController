@@ -3,6 +3,7 @@ import etrobosim as ets
 import time
 import math
 
+# ColorSensorのReflectを使ってP制御でライントレースする。似非10ms周期
 
 def calcPID(r, target=20, power=70,P=1.8):
     p=r-target
@@ -20,6 +21,8 @@ motorL.reset()
 colorSensor=ev3.ColorSensor(ev3.ePortS.PORT_2)
 initARM_count=-50
 initTAIL_count=0
+interval=0.01
+target_time=interval
 
 try:
     controller=ets.Controller(ets.Course.LEFT)
@@ -29,14 +32,22 @@ try:
     controller.add(motorTAIL)
     controller.add(colorSensor)
     controller.start(debug=False)
+    base_time=time.time()
     while controller.isAlive():
         left,right=calcPID(colorSensor.getBrightness())
         motorL.setPWM(left)
         motorR.setPWM(right)
         motorARM.setPWM(initARM_count-motorARM.getCount())
         motorTAIL.setPWM(initTAIL_count-motorTAIL.getCount())
-        print("MotorR={},MotorL={},MotorARM={},Color={}".format(motorR.getCount(),motorL.getCount(),motorARM.getCount(),colorSensor.getBrightness()))
-        time.sleep(0.01)
+        t=time.time()
+        sleeptime = target_time-(t-base_time)
+        print("MotorR={},MotorL={},MotorARM={},Color={},sleeptime={},real_time={}".format(
+            motorR.getCount(),motorL.getCount(),motorARM.getCount(),colorSensor.getBrightness(),
+            sleeptime,t-base_time))
+        if sleeptime>0:
+            time.sleep(sleeptime)
+        target_time+=interval
+
     controller.exit_process()
 except KeyboardInterrupt:
     controller.exit_process()

@@ -9,6 +9,7 @@ motorTAIL=ev3.Motor(ev3.ePortM.PORT_D,True,ev3.MotorType.LARGE_MOTOR)
 motorR.reset()
 motorL.reset()
 
+# 1秒毎に直進と回転を切り替える。
 walker=[(50,50),(50,0)]
 wid=0
 

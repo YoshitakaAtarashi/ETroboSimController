@@ -1,7 +1,7 @@
 import etrobosim.ev3api as ev3
 import etrobosim as ets
 
-# ColorSensorのReflectを使ってP制御でライントレースする。似非10ms周期
+# ColorSensorのReflectを使ってP制御でライントレースする。
 
 def calcPID(r, target=20, power=70,P=1.8):
     p=r-target

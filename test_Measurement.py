@@ -17,10 +17,7 @@ def pidControl(initARM_count=-50,initTAIL_count=0):
     motorR.setPWM(right)
     motorARM.setPWM(initARM_count-motorARM.getCount())
     motorTAIL.setPWM(initTAIL_count-motorTAIL.getCount())
-#    print("MotorR={},MotorL={},MotorARM={},Color={}".format(motorR.getCount(),motorL.getCount(),motorARM.getCount(),colorSensor.getBrightness()))
-#    print("RGB={}".format(colorSensor.getRawColor()))
-#    print("GYRO_ANGLE={}, ANGLER_VELOCITY={}".format(gyroSensor.getAngle(),gyroSensor.getAnglerVelocity()))
-    print("{}, {}".format(gyroSensor.getAngle(),gyroSensor.getAnglerVelocity()))
+    print("CARDNUM={},BLOCKNUM={},ADV_LAYOUT={}".format(measurement.getCardNumber(),measurement.getBlockNumber(),measurement.getAdvLayout()))
 
 motorR=ev3.Motor(ev3.ePortM.PORT_B,True,ev3.MotorType.LARGE_MOTOR)
 motorL=ev3.Motor(ev3.ePortM.PORT_C,True,ev3.MotorType.LARGE_MOTOR)
@@ -30,10 +27,12 @@ motorR.reset()
 motorL.reset()
 colorSensor=ev3.ColorSensor(ev3.ePortS.PORT_2)
 gyroSensor=ev3.GyroSensor(ev3.ePortS.PORT_4)
+measurement=ev3.Measurement()
+
 
 try:
     controller=ets.Controller(ets.Course.LEFT)
-    controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor,gyroSensor])
+    controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor,gyroSensor,measurement])
     controller.start(debug=False)
     gyroSensor.reset()
     controller.runCyclic(pidControl)

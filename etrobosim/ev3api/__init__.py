@@ -4,3 +4,4 @@ from .ColorSensor import ColorSensor
 from .GyroSensor import GyroSensor
 from .SonarSensor import SonarSensor
 from .TouchSensor import TouchSensor
+from .Measurement import Measurement

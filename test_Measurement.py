@@ -18,6 +18,7 @@ def pidControl(initARM_count=-50,initTAIL_count=0):
     motorARM.setPWM(initARM_count-motorARM.getCount())
     motorTAIL.setPWM(initTAIL_count-motorTAIL.getCount())
     print("CARDNUM={},BLOCKNUM={},ADV_LAYOUT={}".format(measurement.getCardNumber(),measurement.getBlockNumber(),measurement.getAdvLayout()))
+    print("MEASUREMENT_TIME={},RUN_TIME={}".format(measurement.measurement_time,measurement.run_time))
 
 motorR=ev3.Motor(ev3.ePortM.PORT_B,True,ev3.MotorType.LARGE_MOTOR)
 motorL=ev3.Motor(ev3.ePortM.PORT_C,True,ev3.MotorType.LARGE_MOTOR)
@@ -28,13 +29,15 @@ motorL.reset()
 colorSensor=ev3.ColorSensor(ev3.ePortS.PORT_2)
 gyroSensor=ev3.GyroSensor(ev3.ePortS.PORT_4)
 measurement=ev3.Measurement()
-
+touchSensor=ev3.TouchSensor(ev3.ePortS.PORT_1)
 
 try:
     controller=ets.Controller(ets.Course.LEFT)
-    controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor,gyroSensor,measurement])
+    controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor,gyroSensor,touchSensor,measurement])
     controller.start(debug=False)
     gyroSensor.reset()
+    while (not touchSensor.isPressed()):
+        time.sleep(0.1)
     controller.runCyclic(pidControl)
     controller.exit_process()
 except KeyboardInterrupt:

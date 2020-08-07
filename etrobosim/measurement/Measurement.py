@@ -16,6 +16,13 @@ class Measurement:
         self.goal=False
         self.garage_stop=0
         self.garage_time=0.0
+        self.slalom=0
+        self.petbottle=0
+        self.block_in_garage=0
+        self.block_yukoido=0
+        self.card_number_circle=0
+        self.block_number_circle=0
+        self.block_bingo=0
         self.lock = threading.Lock()
 
     def getCardNumber(self):
@@ -58,9 +65,45 @@ class Measurement:
             v=self.garage_time
         return v
 
+    def getSlalom(self):
+        with self.lock:
+            v=self.slalom
+        return v
+
+    def getPetbottle(self):
+        with self.lock:
+            v=self.petbottle
+        return v
+
+    def getBlockInGarage(self):
+        with self.lock:
+            v=self.block_in_garage
+        return v
+
+    def getBlockYukoido(self):
+        with self.lock:
+            v=self.block_yukoido
+        return v
+
+    def getCardNumberCircleBonus(self):
+        with self.lock:
+            v=self.card_number_circle
+        return v
+
+    def getBlockNumberCircleBonus(self):
+        with self.lock:
+            v=self.block_number_circle
+        return v
+
+    def getBlockBingo(self):
+        with self.lock:
+            v=self.block_bingo
+        return v 
+
     def _recieveData(self, data : bytearray):
         cardNumber,blockNumber,adv_layout=unpack_from('<ii10s',data,512)
         measurement_time,run_time,gate1,gate2,goal,garage_stop,garage_time=unpack_from('<iiiiiii',data,532)
+        slalom,petbottle,block_in_garage,block_yukoido,card_number_circle,block_number_circle,block_bingo=unpack_from('<iiiiiii',data,560)
         with self.lock:
             self.cardNumber=cardNumber
             self.blockNumber=blockNumber
@@ -72,3 +115,10 @@ class Measurement:
             self.goal=goal
             self.garage_stop=garage_stop
             self.garage_time=float(garage_time)/1000.0
+            self.slalom=slalom
+            self.petbottle=petbottle
+            self.block_in_garage=block_in_garage
+            self.block_yukoido=block_yukoido
+            self.card_number_circle=card_number_circle
+            self.block_number_circle=block_number_circle
+            self.block_bingo=block_bingo

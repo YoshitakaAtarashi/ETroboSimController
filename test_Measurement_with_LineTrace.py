@@ -1,4 +1,5 @@
 import etrobosim.ev3api as ev3
+import etrobosim.measurement as mes
 import etrobosim as ets
 import time
 import math
@@ -29,7 +30,7 @@ motorR.reset()
 motorL.reset()
 colorSensor=ev3.ColorSensor(ev3.ePortS.PORT_2)
 gyroSensor=ev3.GyroSensor(ev3.ePortS.PORT_4)
-measurement=ev3.Measurement()
+measurement=mes.Measurement()
 touchSensor=ev3.TouchSensor(ev3.ePortS.PORT_1)
 
 try:

@@ -5,7 +5,6 @@ import threading
 class Measurement:
 
     def __init__(self):
-        self.isStart=False        
         self.cardNumber=0
         self.blockNumber=0
         self.adv_layout=''

@@ -18,8 +18,6 @@ def pidControl(initARM_count=-50,initTAIL_count=0):
     motorR.setPWM(right)
     motorARM.setPWM(initARM_count-motorARM.getCount())
     motorTAIL.setPWM(initTAIL_count-motorTAIL.getCount())
-#    print("CARDNUM={},BLOCKNUM={},ADV_LAYOUT={}".format(measurement.getCardNumber(),measurement.getBlockNumber(),measurement.getAdvLayout()))
-#    print("MEASUREMENT_TIME={},RUN_TIME={}".format(measurement.measurement_time,measurement.run_time))
     print(vars(measurement))
 
 motorR=ev3.Motor(ev3.ePortM.PORT_B,True,ev3.MotorType.LARGE_MOTOR)

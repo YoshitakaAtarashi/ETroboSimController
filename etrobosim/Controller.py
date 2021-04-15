@@ -43,17 +43,13 @@ class Controller:
             self.addHandler(handler)
 
     def runCyclic(self, function, interval=0.01):
-        base_time=time.time()
-        target_time=interval
+        self.client.interval=interval
+        base_time=self.client.unityTime
+        target_time=base_time+1
         while self.isAlive():
             function()
-            t=time.time()
-            sleeptime = target_time-(t-base_time)
-            if self.debug:
-                print("sleeptime={},real_time={}".format(sleeptime,t-base_time))
-            if sleeptime>0:
-                time.sleep(sleeptime)
-            target_time+=interval
+            time.sleep(interval)
+        print("runCyclic: end")
 
 
 

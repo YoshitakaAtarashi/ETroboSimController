@@ -15,7 +15,7 @@ def pidControl(initARM_count=-50,initTAIL_count=0):
     motorR.setPWM(right)
     motorARM.setPWM(initARM_count-motorARM.getCount())
     motorTAIL.setPWM(initTAIL_count-motorTAIL.getCount())
-    print("MotorR={},MotorL={},MotorARM={},Color={}".format(motorR.getCount(),motorL.getCount(),motorARM.getCount(),colorSensor.getBrightness()))
+    #print("MotorR={},MotorL={},MotorARM={},Color={}".format(motorR.getCount(),motorL.getCount(),motorARM.getCount(),colorSensor.getBrightness()))
 
 
 motorR=ev3.Motor(ev3.ePortM.PORT_B,True,ev3.MotorType.LARGE_MOTOR)
@@ -29,7 +29,7 @@ colorSensor=ev3.ColorSensor(ev3.ePortS.PORT_2)
 try:
     controller=ets.Controller(ets.Course.LEFT)
     controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor])
-    controller.start(debug=False)
+    controller.start(debug=True)
     controller.runCyclic(pidControl)
     controller.exit_process()
 except KeyboardInterrupt:

@@ -30,11 +30,14 @@ motorR.reset()
 motorL.reset()
 colorSensor=ev3.ColorSensor(ev3.ePortS.PORT_2)
 gyroSensor=ev3.GyroSensor(ev3.ePortS.PORT_4)
+touchSensor=ev3.TouchSensor(ev3.ePortS.PORT_1)
 
 try:
-    controller=ets.Controller(ets.Course.LEFT)
-    controller.addHandlers([motorR,motorL,motorARM,motorTAIL,colorSensor,gyroSensor])
+    controller=ets.Controller(ets.Course.RIGHT)
+    controller.addHandlers([touchSensor,motorR,motorL,motorARM,motorTAIL,colorSensor,gyroSensor])
     controller.start(debug=False)
+    while (not touchSensor.isPressed()):
+        time.sleep(0.1)
     gyroSensor.reset()
     controller.runCyclic(pidControl)
     controller.exit_process()

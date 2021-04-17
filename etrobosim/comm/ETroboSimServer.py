@@ -16,6 +16,7 @@ class ETroboSimServer():
         self.EMBEDDED_ADDRESS=embedded_address
         self.EMBEDDED_PORT=embedded_port
         self.PACKET_SIZE=packet_size
+        self.thread = None
     
     def start(self):
         self.socket=socket(AF_INET, SOCK_DGRAM)
@@ -33,7 +34,8 @@ class ETroboSimServer():
             lambda: ETroboSimServer(self.client,self.EMBEDDED_ADDRESS, self.EMBEDDED_PORT, self.PACKET_SIZE,self.handlers), 
             local_addr=(self.EMBEDDED_ADDRESS, self.EMBEDDED_PORT))
         try:
-            await asyncio.sleep(3600)  # Serve for 1 hour.
+            while(self.alive):
+                await asyncio.sleep(1) 
         finally:
             transport.close()
 
@@ -50,6 +52,11 @@ class ETroboSimServer():
             print("Unity address {} is not EMBEDDED_ADDRESS {}".format(self.unity_address,self.EMBEDDED_ADDRESS))
         for handler in self.handlers:
             handler._recieveData(self.data)
+    
+    def connection_lost(self, exc):
+        # print("Socket closed, stop the event loop")
+        loop = asyncio.get_event_loop()
+        loop.stop()
 
     def addHandler(self, handler):
         self.handlers.append(handler)
@@ -61,7 +68,8 @@ class ETroboSimServer():
 
     def exit_process(self):
         self.alive=False
-        self.thread.join()
+        if self.thread is not None:
+            self.thread.join()
     
     def __del__(self):
         self.exit_process()

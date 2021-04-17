@@ -26,8 +26,14 @@ class Controller:
         self.debug=debug
     
     def exit_process(self):
+        if self.debug:
+            print("exit_process(): client")
         self.client.exit_process()
+        if self.debug:
+            print("exit_process(): server")
         self.server.exit_process()
+        if self.debug:
+            print("exit_process(): end")
 
     def isAlive(self):
         return self.server.alive and self.client.alive

@@ -34,5 +34,5 @@ try:
     controller.exit_process()
 except KeyboardInterrupt:
     controller.exit_process()
-    raise
+    pass
 

@@ -34,7 +34,8 @@ class ETroboSimClient():
     def threadMethod(self):
         i=0
         while self.alive:
-            print("unitytime={},embeddedTime={}".format(self.unityTime,self.embeddedTime))
+            if self.debug:
+                print("unitytime={},embeddedTime={}".format(self.unityTime,self.embeddedTime))
             if(self.embeddedTime<=self.unityTime):
                 self.sendPacket()
                 self.embeddedTime=self.embeddedTime+(int)(self.interval*1000000)

@@ -19,7 +19,6 @@ class ETroboSimServer():
         self.thread = None
     
     def start(self):
-        self.socket=socket(AF_INET, SOCK_DGRAM)
         self.thread = threading.Thread(target=self.threadMethod)
         self.alive=True
         self.thread.start()

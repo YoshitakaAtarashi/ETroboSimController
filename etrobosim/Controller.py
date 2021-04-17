@@ -50,12 +50,15 @@ class Controller:
 
     def runCyclic(self, function, interval=0.01):
         self.client.interval=interval
-        base_time=self.client.unityTime
-        target_time=base_time+1
+        target_time=self.client.embeddedTime
         while self.isAlive():
-            function()
-            time.sleep(interval)
-        print("runCyclic: end")
+            if target_time<=self.client.embeddedTime:                
+                function()
+                target_time=target_time+interval*1000000
+            else:
+                # 少し待つ。
+                time.sleep(0.001)
+
 
 
 

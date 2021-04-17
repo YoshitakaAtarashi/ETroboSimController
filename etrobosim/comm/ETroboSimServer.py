@@ -35,7 +35,7 @@ class ETroboSimServer():
             local_addr=(self.EMBEDDED_ADDRESS, self.EMBEDDED_PORT))
         try:
             while(self.alive):
-                await asyncio.sleep(1) 
+                await asyncio.sleep(0.1) 
         finally:
             transport.close()
 
@@ -68,8 +68,10 @@ class ETroboSimServer():
 
     def exit_process(self):
         self.alive=False
-        if self.thread is not None:
+        while self.thread is not None:
             self.thread.join()
+            self.thread=None
+                
     
     def __del__(self):
         self.exit_process()

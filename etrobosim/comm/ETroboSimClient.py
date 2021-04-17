@@ -43,22 +43,6 @@ class ETroboSimClient():
             else:
                 time.sleep(0.001)
 
-    def threadMethod_old(self):
-        i=0
-        base_time = time.time()
-        target_time=self.interval
-        while self.alive:
-            self.sendPacket()
-            t=time.time()
-            sleeptime = target_time-(t-base_time)
-            self.embeddedTime=self.embeddedTime+(int)(self.interval*1000000)
-            target_time+=self.interval
-            if(self.debug):
-                print("Embedded->Unity: {}, EMBEDDED_TIME: {}, REAL_TIME: {}, SLEEP:{}".format(i,self.embeddedTime,t-base_time,sleeptime))
-            if sleeptime>0:
-                time.sleep(sleeptime)
-            i=i+1
-
     def addHandler(self, handler):
         self.handlers.append(handler)
         return self

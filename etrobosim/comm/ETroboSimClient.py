@@ -4,7 +4,7 @@ import time
 import threading
 
 class ETroboSimClient():
-    def __init__(self, interval=0.01, unity_address='127.0.0.1', unity_port=54001, packet_size=1024):
+    def __init__(self, interval=0.01, unity_address='127.0.0.1', unity_port=54001, packet_size=1024,timeout=1):
         self.UNITY_ADDRESS=unity_address
         self.UNITY_PORT=unity_port
         self.PACKET_SIZE=packet_size
@@ -17,6 +17,7 @@ class ETroboSimClient():
         self.led=3
         self.debug=False
         self.handlers = []
+        self.timeout = timeout
 
     def start(self):
         self.socket=socket(AF_INET, SOCK_DGRAM)
@@ -33,15 +34,21 @@ class ETroboSimClient():
 
     def threadMethod(self):
         i=0
+        starttime=time.time()
         while self.alive:
             if self.debug:
                 print("unitytime={},embeddedTime={}".format(self.unityTime,self.embeddedTime))
             if(self.embeddedTime<=self.unityTime):
                 self.sendPacket()
                 self.embeddedTime=self.embeddedTime+(int)(self.interval*1000000)
+                starttime=time.time()
                 i=i+1
             else:
-                time.sleep(0.001)
+                if(self.timeout>0 and time.time()-starttime>self.timeout):
+                    self.alive=False
+                else:
+                    time.sleep(0.001)
+
 
     def addHandler(self, handler):
         self.handlers.append(handler)

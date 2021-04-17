@@ -24,9 +24,9 @@ try:
     controller=ets.Controller(ets.Course.LEFT)
     controller.addHandlers([motorR,motorL,colorSensor,gyroSensor,sonarSensor,touchSensor])
     controller.start(debug=False)
-    controller.runCyclic(dispSensor,interval=1.0)
+    controller.runCyclic(dispSensor)
     controller.exit_process()
 except KeyboardInterrupt:
     controller.exit_process()
-    raise
+    pass
 

@@ -36,6 +36,8 @@ class ETroboSimServer():
         try:
             while(self.alive):
                 await asyncio.sleep(0.1) 
+        except:
+            self.alive=False
         finally:
             transport.close()
 

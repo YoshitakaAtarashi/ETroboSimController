@@ -26,8 +26,14 @@ class Controller:
         self.debug=debug
     
     def exit_process(self):
+        if self.debug:
+            print("exit_process(): client")
         self.client.exit_process()
+        if self.debug:
+            print("exit_process(): server")
         self.server.exit_process()
+        if self.debug:
+            print("exit_process(): end")
 
     def isAlive(self):
         return self.server.alive and self.client.alive
@@ -43,17 +49,16 @@ class Controller:
             self.addHandler(handler)
 
     def runCyclic(self, function, interval=0.01):
-        base_time=time.time()
-        target_time=interval
+        self.client.interval=interval
+        target_time=self.client.embeddedTime
         while self.isAlive():
-            function()
-            t=time.time()
-            sleeptime = target_time-(t-base_time)
-            if self.debug:
-                print("sleeptime={},real_time={}".format(sleeptime,t-base_time))
-            if sleeptime>0:
-                time.sleep(sleeptime)
-            target_time+=interval
+            if target_time<=self.client.embeddedTime:                
+                function()
+                target_time=target_time+interval*1000000
+            else:
+                # 少し待つ。
+                time.sleep(0.001)
+
 
 
 

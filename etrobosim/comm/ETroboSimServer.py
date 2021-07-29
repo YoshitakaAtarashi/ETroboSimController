@@ -2,40 +2,62 @@ from socket import socket, AF_INET, SOCK_DGRAM
 from struct import pack_into, unpack_from
 import time
 import threading
+import asyncio
 
-class ETroboSimServer:
-    def __init__(self,client,embedded_address='127.0.0.1', embedded_port=54002, packet_size=1024):
+
+class ETroboSimServer():
+
+    def __init__(self,client,embedded_address='127.0.0.1', embedded_port=54002, packet_size=1024,handlers=[]):
+        self.embeddedTime=0
+        self.debug=False
+        self.handlers =handlers
+        self.alive=False
         self.client=client
         self.EMBEDDED_ADDRESS=embedded_address
         self.EMBEDDED_PORT=embedded_port
         self.PACKET_SIZE=packet_size
-        self.embeddedTime=0
-        self.debug=False
-        self.handlers = []
+        self.thread = None
     
     def start(self):
-        self.socket=socket(AF_INET, SOCK_DGRAM)
-        self.socket.bind((self.EMBEDDED_ADDRESS, self.EMBEDDED_PORT))
         self.thread = threading.Thread(target=self.threadMethod)
         self.alive=True
         self.thread.start()
 
-    def recievePacket(self):
-        self.data, self.unity_address = self.socket.recvfrom(self.PACKET_SIZE)
-        self.unityTime,=unpack_from('<Q',self.data,16)
+    def threadMethod(self):
+        asyncio.run(self.server())
+
+    async def server(self):
+        print("Starting UDP server")
+        loop = asyncio.get_running_loop()
+        transport, protocol = await loop.create_datagram_endpoint(
+            lambda: ETroboSimServer(self.client,self.EMBEDDED_ADDRESS, self.EMBEDDED_PORT, self.PACKET_SIZE,self.handlers), 
+            local_addr=(self.EMBEDDED_ADDRESS, self.EMBEDDED_PORT))
+        try:
+            while(self.alive):
+                await asyncio.sleep(0.1) 
+        except:
+            self.alive=False
+        finally:
+            transport.close()
+
+    def connection_made(self, transport):
+        self.transport = transport
+
+    def datagram_received(self, data, addr):
+        self.data=data
+        self.unity_address=addr
+        self.unityTime,=unpack_from('<Q',self.data,16) 
+        self.client.unityTime=self.unityTime 
+        # print("datagram_received: Unity Time {} ".format(self.unityTime))
         if(self.debug and self.unity_address[0]!=self.EMBEDDED_ADDRESS):
             print("Unity address {} is not EMBEDDED_ADDRESS {}".format(self.unity_address,self.EMBEDDED_ADDRESS))
         for handler in self.handlers:
             handler._recieveData(self.data)
-
-    def threadMethod(self):
-        i=0
-        while self.alive:
-            self.recievePacket()
-            if(self.debug):
-                print("Unity->Embedded: {}, UNITY_TIME: {}".format(i,self.unityTime))
-            self.client.unityTime=self.unityTime        
-            i=i+1
+    
+    def connection_lost(self, exc):
+        # print("Socket closed, stop the event loop")
+        loop = asyncio.get_event_loop()
+        loop.stop()
 
     def addHandler(self, handler):
         self.handlers.append(handler)
@@ -47,7 +69,11 @@ class ETroboSimServer:
 
     def exit_process(self):
         self.alive=False
-        self.thread.join()
+        while self.thread is not None:
+            self.thread.join()
+            self.thread=None
+                
     
     def __del__(self):
         self.exit_process()
+
